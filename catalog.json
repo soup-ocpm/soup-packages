@@ -1,3 +1,354 @@
 {
-  "packages": []
+  "packages": [
+    {
+      "api_version": "4.0",
+      "author": "SOUP",
+      "contributors": [
+        {
+          "email": "alessiopianaroli.it@gmail.com",
+          "name": "SOUP"
+        }
+      ],
+      "description": "Contributes the causal :DF build step (order 450) to ekg.build_steps, for trigger/target entity-type pairs.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/causal_df/v1.0.0/causal_df-1.0.0.zip",
+      "extension_points": [],
+      "label": "Causal directly-follows",
+      "name": "causal_df",
+      "provides_tools": [],
+      "python_dependencies": [],
+      "requires": [
+        "ekg"
+      ],
+      "requires_tools": [],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "48b4d71d1a45c4a77e37fb333519c7d2fedff885c2ecd55703979c0a90994c88",
+      "version": "1.0.0"
+    },
+    {
+      "api_version": "4.0",
+      "author": "SOUP",
+      "contributors": [
+        {
+          "email": "alessiopianaroli.it@gmail.com",
+          "name": "SOUP"
+        }
+      ],
+      "description": "Imports CSV files as event logs and builds their EKG on Memgraph (the import of the old New dataset page), with the multiplicities between entity columns in the preview, and converts csv_table tables into EKGs.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/csv_ekg/v1.0.0/csv_ekg-1.0.0.zip",
+      "extension_points": [],
+      "label": "CSV as event log (EKG)",
+      "name": "csv_ekg",
+      "provides_tools": [],
+      "python_dependencies": [
+        "pandas==2.2.3",
+        "numpy==2.2.6"
+      ],
+      "requires": [
+        "ekg",
+        "soup_base",
+        "csv_table"
+      ],
+      "requires_tools": [
+        "memgraph",
+        "storage"
+      ],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "b0549400b95706c3ec16f30defcd032a78c3499233db703cdf1885bc9e7b0e62",
+      "version": "1.0.0"
+    },
+    {
+      "api_version": "4.1",
+      "app": {
+        "entry": "dist/index.js"
+      },
+      "author": "SOUP",
+      "contributors": [
+        {
+          "email": "alessiopianaroli.it@gmail.com",
+          "name": "SOUP"
+        }
+      ],
+      "databases": [
+        "memgraph",
+        "neo4j"
+      ],
+      "description": "Imports CSV/TSV files as tables (Python's csv module): remote paging, sorting and column filters, a column profile, the distribution of a column as a report and the CSV export.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/csv_table/v1.0.0/csv_table-1.0.0.zip",
+      "extension_points": [],
+      "label": "CSV as table",
+      "name": "csv_table",
+      "provides_tools": [],
+      "python_dependencies": [],
+      "requires": [
+        "soup_base",
+        "tool_storage"
+      ],
+      "requires_tools": [
+        "storage"
+      ],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "474732fbafb53a1780f041101ccb3ae62d1c8d721fa1640eabf6de3e56a06884",
+      "version": "1.0.0"
+    },
+    {
+      "api_version": "4.0",
+      "author": "SOUP",
+      "contributors": [
+        {
+          "email": "alessiopianaroli.it@gmail.com",
+          "name": "SOUP"
+        }
+      ],
+      "description": "Event log (normalization, entities, canonical CSV), datasets on the volume and the EKG on Memgraph: build pipeline, graph state of the 'ekg' objects and the datasets already on the volume added to the catalog.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/ekg/v1.0.0/ekg-1.0.0.zip",
+      "extension_points": [
+        "ekg.build_steps",
+        "ekg.state_providers"
+      ],
+      "label": "Event log and EKG",
+      "name": "ekg",
+      "provides_tools": [],
+      "python_dependencies": [
+        "pandas==2.2.3",
+        "numpy==2.2.6"
+      ],
+      "requires": [
+        "tool_memgraph",
+        "tool_storage"
+      ],
+      "requires_tools": [
+        "memgraph",
+        "storage",
+        "catalog"
+      ],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "2f9f1690dc297580402a2d3ea553c988074f4a490e9e823a651cf049c83019ba",
+      "version": "1.0.0"
+    },
+    {
+      "api_version": "4.0",
+      "app": {
+        "entry": "dist/index.js"
+      },
+      "author": "SOUP",
+      "contributors": [
+        {
+          "email": "alessiopianaroli.it@gmail.com",
+          "name": "SOUP"
+        }
+      ],
+      "description": "Analyses of 'ekg' objects as operations (filters contributed to ekg.analysis_filters, applied with a compensating rollback), the legacy analyses on the volume, the example and the export of a configuration, and the process indicators.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/ekg_analysis/v1.0.0/ekg_analysis-1.0.0.zip",
+      "extension_points": [
+        "ekg.analysis_filters"
+      ],
+      "label": "EKG analysis",
+      "name": "ekg_analysis",
+      "provides_tools": [],
+      "python_dependencies": [],
+      "requires": [
+        "ekg",
+        "ekg_views",
+        "soup_base"
+      ],
+      "requires_tools": [
+        "memgraph",
+        "storage",
+        "catalog"
+      ],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "0c6e1c18c6c2d677a65a78ac4f39528d3b375775a30c44000e14cf790cea66e7",
+      "version": "1.0.0"
+    },
+    {
+      "api_version": "4.0",
+      "app": {
+        "entry": "dist/index.js"
+      },
+      "author": "SOUP",
+      "contributors": [
+        {
+          "email": "alessiopianaroli.it@gmail.com",
+          "name": "SOUP"
+        }
+      ],
+      "description": "The aggregate (class) graph of an 'ekg' object as an 'ekg_class' object: Class nodes, OBSERVED and DF_C relationships, its view, queries and JSON parts, its visualizers, and an Observer that removes the classes before the graph is reset or filtered.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/ekg_class_graph/v1.0.0/ekg_class_graph-1.0.0.zip",
+      "extension_points": [],
+      "label": "EKG aggregate graph",
+      "name": "ekg_class_graph",
+      "provides_tools": [],
+      "python_dependencies": [],
+      "requires": [
+        "ekg",
+        "ekg_views",
+        "soup_base"
+      ],
+      "requires_tools": [
+        "memgraph"
+      ],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "bae15d321f0f0accbd1690409c5eb20e8f2e38b99aed7f567b2b5b958abb33c6",
+      "version": "1.0.0"
+    },
+    {
+      "api_version": "4.0",
+      "app": {
+        "entry": "dist/index.js"
+      },
+      "author": "SOUP",
+      "contributors": [
+        {
+          "email": "alessiopianaroli.it@gmail.com",
+          "name": "SOUP"
+        }
+      ],
+      "databases": [
+        "memgraph",
+        "neo4j"
+      ],
+      "description": "Visualizers and exporter of Memgraph 'ekg' and Memgraph/Neo4j 'oced_importer.log' objects: the graph (views contributed to ekg.graph_views), the statistics, the queries contributed to ekg.queries and the JSON of the graph (parts contributed to ekg.json_parts); the statistics show the notices contributed to ekg.stats_notices.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/ekg_views/v1.0.0/ekg_views-1.0.0.zip",
+      "extension_points": [
+        "ekg.graph_views",
+        "ekg.queries",
+        "ekg.json_parts",
+        "ekg.stats_notices"
+      ],
+      "label": "EKG views",
+      "name": "ekg_views",
+      "provides_tools": [],
+      "python_dependencies": [],
+      "requires": [
+        "soup_base"
+      ],
+      "requires_tools": [
+        "storage"
+      ],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "7040cbe1169c1b3175a261072a65e88a610fda912b6406400eab8ecea2a5b98e",
+      "version": "1.0.0"
+    },
+    {
+      "api_version": "4.0",
+      "app": {
+        "entry": "dist/index.js"
+      },
+      "author": "SOUP",
+      "contributors": [],
+      "databases": [
+        "memgraph",
+        "neo4j"
+      ],
+      "description": "Read-only incremental exploration and application-stored graph scenes.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/graph_explorer/v1.0.0/graph_explorer-1.0.0.zip",
+      "extension_points": [],
+      "label": "Graph Explorer",
+      "name": "graph_explorer",
+      "provides_tools": [],
+      "python_dependencies": [],
+      "requires": [
+        "soup_base",
+        "tool_storage"
+      ],
+      "requires_tools": [
+        "storage"
+      ],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "a583adb4c7f125d6b5daeb3d2e905dfa1850faa6fa66820db3a945b33adee319",
+      "version": "1.0.0"
+    },
+    {
+      "api_version": "4.0",
+      "app": {
+        "entry": "dist/index.js"
+      },
+      "author": "SOUP integration of ocean-lib",
+      "databases": [
+        "memgraph",
+        "neo4j"
+      ],
+      "description": "Configure original OCEAN aggregations on selected Neo4j OCED or Memgraph EKG datasets and explore Class/DF_C graphs.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/ocean_aggregation/v1.0.0/ocean_aggregation-1.0.0.zip",
+      "extension_points": [],
+      "label": "Ocean aggregation",
+      "name": "ocean_aggregation",
+      "provides_tools": [],
+      "python_dependencies": [
+        "neo4j",
+        "PyYAML==6.0.3"
+      ],
+      "requires": [
+        "soup_base",
+        "tool_storage"
+      ],
+      "requires_tools": [],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "4227a8ffdd52e0128447e86f1ec1738f13426fc6efc04f79fc03a997ab52f7e6",
+      "version": "1.0.0"
+    },
+    {
+      "api_version": "4.1",
+      "app": {
+        "entry": "dist/index.js"
+      },
+      "author": "SOUP",
+      "contributors": [
+        {
+          "email": "alessiopianaroli.it@gmail.com",
+          "name": "SOUP"
+        }
+      ],
+      "description": "Imports OCEL 2.0 JSON logs (.json, .jsonocel) as tables in the package's storage space or as EKGs on Memgraph, shows the tables and a summary, decomposes the tables into an EKG (with the qualifiers on :CORR and the object-object relationships as :REL, through its step in ekg.build_steps) and exports them as OCEL 2.0 JSON.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/ocel/v1.1.0/ocel-1.1.0.zip",
+      "extension_points": [],
+      "label": "OCEL 2.0",
+      "name": "ocel",
+      "provides_tools": [],
+      "python_dependencies": [],
+      "requires": [
+        "soup_base",
+        "ekg",
+        "ekg_views",
+        "tool_storage"
+      ],
+      "requires_tools": [
+        "memgraph",
+        "storage"
+      ],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "2c570b9132d015a8ad9dc909f7d82fd60b26e20cb2eb90ab75b3be4f08d020fe",
+      "version": "1.1.0"
+    }
+  ]
 }
