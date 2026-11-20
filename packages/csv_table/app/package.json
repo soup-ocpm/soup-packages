@@ -5,8 +5,7 @@
   "description": "Frontend of the csv_table package: <soup-pkg-csv-table-viewer> and <soup-pkg-csv-profile> (use the elements of soup_base by tag)",
   "contributors": [
     {
-      "name": "SOUP",
-      "email": "alessiopianaroli.it@gmail.com"
+      "name": "SOUP"
     }
   ],
   "type": "module",

@@ -5,7 +5,7 @@
   "label": "Causal directly-follows",
   "description": "Contributes the causal :DF build step (order 450) to ekg.build_steps, for trigger/target entity-type pairs.",
   "author": "SOUP",
-  "contributors": [{"name": "SOUP", "email": "alessiopianaroli.it@gmail.com"}],
+  "contributors": [{"name": "SOUP"}],
   "requires": ["ekg"],
   "requires_tools": [],
   "provides_tools": [],

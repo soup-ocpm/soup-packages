@@ -5,7 +5,7 @@
   "label": "EKG views",
   "description": "Visualizers and exporter of Memgraph 'ekg' and Memgraph/Neo4j 'oced_importer.log' objects: the graph (views contributed to ekg.graph_views), the statistics, the queries contributed to ekg.queries and the JSON of the graph (parts contributed to ekg.json_parts); the statistics show the notices contributed to ekg.stats_notices.",
   "author": "SOUP",
-  "contributors": [{"name": "SOUP", "email": "alessiopianaroli.it@gmail.com"}],
+  "contributors": [{"name": "SOUP"}],
   "databases": ["memgraph", "neo4j"],
   "requires": ["soup_base"],
   "requires_tools": ["storage"],

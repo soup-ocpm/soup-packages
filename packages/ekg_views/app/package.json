@@ -5,8 +5,7 @@
   "description": "Frontend of the ekg_views package: <soup-pkg-ekg-graph>, <soup-pkg-ekg-stats> and <soup-pkg-ekg-queries> (use the elements of soup_base by tag)",
   "contributors": [
     {
-      "name": "SOUP",
-      "email": "alessiopianaroli.it@gmail.com"
+      "name": "SOUP"
     }
   ],
   "type": "module",
