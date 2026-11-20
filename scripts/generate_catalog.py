@@ -83,40 +83,43 @@ def github(*args, **kwargs):
     return subprocess.run(["gh", *args], check=True, **kwargs)
 
 
-def catalog_from_releases(repo):
+def list_releases(repo):
     pages = json.loads(github(
         "api", "--paginate", "--slurp", f"repos/{repo}/releases?per_page=100",
         stdout=subprocess.PIPE,
     ).stdout)
+    return [release for page in pages for release in page]
+
+
+def catalog_from_releases(repo):
     entries = {}
     with tempfile.TemporaryDirectory() as directory:
-        for page in pages:
-            for release in page:
-                tag = release["tag_name"]
-                if release["draft"] or not TAG.fullmatch(tag):
-                    continue
-                filename = asset_name(tag)
-                assets = [asset for asset in release["assets"] if asset["name"] == filename]
-                if len(assets) != 1 or assets[0]["state"] != "uploaded":
-                    raise ValueError(f"{tag}: expected one uploaded release asset named {filename}")
-                asset = assets[0]
-                if asset["size"] > MAX_ZIP_BYTES:
-                    raise ValueError(f"{tag}: released ZIP exceeds the SOUP installer size limit")
-                path = Path(directory) / filename
-                with path.open("wb") as file:
-                    github(
-                        "api", "-H", "Accept: application/octet-stream",
-                        f"repos/{repo}/releases/assets/{asset['id']}", stdout=file,
-                    )
-                metadata = read_asset(path, tag)
-                path.unlink()
-                if digest := asset.get("digest"):
-                    if digest != f"sha256:{metadata['sha256']}":
-                        raise ValueError(f"{tag}: downloaded ZIP does not match GitHub's digest")
-                identity = parse_tag(tag)
-                if identity in entries:
-                    raise ValueError(f"{tag}: duplicate release")
-                entries[identity] = {**metadata, "download_url": asset["browser_download_url"]}
+        for release in list_releases(repo):
+            tag = release["tag_name"]
+            if release["draft"] or not TAG.fullmatch(tag):
+                continue
+            filename = asset_name(tag)
+            assets = [asset for asset in release["assets"] if asset["name"] == filename]
+            if len(assets) != 1 or assets[0]["state"] != "uploaded":
+                raise ValueError(f"{tag}: expected one uploaded release asset named {filename}")
+            asset = assets[0]
+            if asset["size"] > MAX_ZIP_BYTES:
+                raise ValueError(f"{tag}: released ZIP exceeds the SOUP installer size limit")
+            path = Path(directory) / filename
+            with path.open("wb") as file:
+                github(
+                    "api", "-H", "Accept: application/octet-stream",
+                    f"repos/{repo}/releases/assets/{asset['id']}", stdout=file,
+                )
+            metadata = read_asset(path, tag)
+            path.unlink()
+            if digest := asset.get("digest"):
+                if digest != f"sha256:{metadata['sha256']}":
+                    raise ValueError(f"{tag}: downloaded ZIP does not match GitHub's digest")
+            identity = parse_tag(tag)
+            if identity in entries:
+                raise ValueError(f"{tag}: duplicate release")
+            entries[identity] = {**metadata, "download_url": asset["browser_download_url"]}
     return {"packages": [entries[key] for key in sorted(entries)]}
 
 

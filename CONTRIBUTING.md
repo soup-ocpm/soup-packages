@@ -49,6 +49,26 @@ workflow below.
 
 ## Maintainer releases
 
+To publish multiple packages automatically, add their IDs and exact manifest
+versions to [`.github/release-approvals.json`](.github/release-approvals.json)
+in a maintainer-reviewed PR. The following example approves two versions.
+
+```json
+{
+  "graph_explorer": "1.0.0",
+  "oced_importer": "1.2.0"
+}
+```
+
+After the PR lands on `main` and the build passes, the publish job creates
+any missing package tags, attaches each approved installer ZIP to its own
+GitHub Release, and updates the catalog. A version bump requires a matching
+approval. Already published versions are skipped. Configure repository rules
+to allow the workflow to create package tags and push its catalog commit.
+Restrict approval-list changes to maintainer review.
+
+### Manual release
+
 1. Update the package's manifest version in a PR and merge it. Packages have
    independent versions. When overriding a package bundled with SOUP, choose
    a version higher than the bundled one. Release any required community

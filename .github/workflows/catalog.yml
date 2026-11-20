@@ -17,7 +17,7 @@ permissions:
 
 concurrency:
   group: community-packages-${{ github.event.pull_request.number || inputs.tag || github.ref }}
-  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -27,11 +27,18 @@ jobs:
     outputs:
       release-commit: ${{ steps.source.outputs.commit }}
       packages: ${{ steps.packages.outputs.files }}
+      approved: ${{ steps.approvals.outputs.pending }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Check release approvals
+        if: github.event_name != 'workflow_dispatch'
+        id: approvals
+        run: |
+          pending=$(python3 scripts/publish_approved.py)
+          printf 'pending=%s\n' "$pending" >> "$GITHUB_OUTPUT"
       - name: Resolve release source
         if: github.event_name == 'workflow_dispatch'
         id: source
@@ -115,7 +122,10 @@ jobs:
           if-no-files-found: error
 
   publish:
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'push' && needs.build.outputs.approved != '[]'))
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -129,9 +139,15 @@ jobs:
           python-version: '3.12'
       - uses: actions/download-artifact@v4
         with:
-          name: package-zip
+          name: ${{ github.event_name == 'push' && 'all-package-zips' || 'package-zip' }}
           path: ${{ runner.temp }}/release-assets
+      - name: Publish approved package versions
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/publish_approved.py --repo "$GITHUB_REPOSITORY" --publish "$RUNNER_TEMP/release-assets"
       - name: Publish package release
+        if: github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}

@@ -1,0 +1,16 @@
+{
+    "causal_df": "1.0.0",
+    "csv_ekg": "1.0.0",
+    "csv_table": "1.0.0",
+    "ekg": "1.0.0",
+    "ekg_analysis": "1.0.0",
+    "ekg_class_graph": "1.0.0",
+    "ekg_views": "1.0.0",
+    "graph_explorer": "1.0.0",
+    "ocean_aggregation": "1.0.0",
+    "oced_importer": "1.0.0",
+    "ocel": "1.1.0",
+    "ocel2_oced_bridge": "1.0.0",
+    "pm4py_ocdfg": "1.0.0",
+    "promg_bpic17": "1.0.0"
+}
