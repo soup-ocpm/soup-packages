@@ -80,6 +80,8 @@ def validate_backend(order, extracted, test_directory):
         if any(python_dependency_problems(sources[name].manifest) for name in order):
             run(
                 sys.executable, "-I", "-m", "pip", "install", "--only-binary=:all:",
+                # PM4Py depends on pydotplus, which PyPI publishes only as source.
+                "--no-binary=pydotplus",
                 "--constraint", Path(soup_server) / "requirements.txt", "--target", libraries,
                 *sorted(requirements),
             )
