@@ -1,34 +1,75 @@
-# Submitting a SOUP package
+# Contributing a SOUP package
 
-1. Include one UTF-8 `soup-package.json` at the ZIP root or inside a single
-   top-level package directory. Keep the package files under the same root
-   as the manifest. Use relative paths with forward slashes and include
-   regular files and directories only.
-2. Put the archive under `packages/<name>/`. For a new release, give the
-   manifest a new version and add a separate ZIP. The generator reads package
-   identity and version from the manifest.
-3. Run `python3 scripts/generate_catalog.py --validate` with Python 3.11 or
-   newer. Fix any reported errors and rerun validation.
-4. Open a pull request against `main` with the ZIP. Leave catalog generation to
-   GitHub Actions after the merge.
+## Package source
 
-## Manifest fields
+Create `packages/<package_id>/` and include the following files.
 
-- `name` is the package ID. Start with an ASCII letter or digit and use only
-  letters, digits, dots, underscores, and hyphens. If present, `id` must
-  match `name`. Each name and version pair must be unique across the catalog.
-- `version` identifies the package release, such as `1.0.0`. `api_version`
-  identifies the compatible SOUP API version, such as `4.0`. Both are strings.
-- `description` is a non-empty string describing the package.
-- `databases`, `requires`, `requires_tools`, `provides_tools`, and
-  `python_dependencies`, when present, are arrays of non-empty strings
-  without repeated entries. List package dependencies in `requires`, including
-  dependencies supplied by the SOUP installation.
-- If `app` is present, its `entry` must point to an archived file relative to
-  the package's `app/` directory. If `server` is present, supply non-empty
-  `module` and `plugin` strings.
-- `download_url` and `sha256` are generated from the ZIP path and bytes.
+| Path | Purpose |
+| --- | --- |
+| `soup-package.json` | SOUP manifest. Set `name` to the directory name, include a description, and use a version such as `1.0.0` and the compatible `api_version`. |
+| `server/` | Python backend. Declare its module and plugin entry in the manifest. |
+| `requirements.txt` | Optional named PEP 508 Python dependencies. The manifest's `python_dependencies` field is also supported. Declare SOUP package and tool dependencies in `requires` and `requires_tools`. |
+| `app/` | For packages with a frontend, include `package.json`, `tsconfig.json`, and `src/index.ts`. Declare frontend dependencies in `app/package.json` and set the manifest's `app.entry` to `dist/index.js`. |
+| `tests/` and `app/test/` | Backend `unittest` files named `test_*.py` and frontend Vitest files named `*.test.ts`. |
+| `README.md` | Explain the package, its dependencies, and how to use or test it. |
 
-Validation reads the ZIP and checks its members and manifest without extracting
-the archive or loading package code. The existing Graph Explorer archive is
-available under [packages/graph_explorer/](packages/graph_explorer/).
+Package IDs start with a lowercase letter and use lowercase letters, digits,
+and underscores. Use normalized release versions such as `1.0.0` or `1.1.0rc1`.
+SOUP's [package development guide](https://github.com/soup-ocpm/soup/blob/694f2083c311a12c1e4a32a8ff1212b9f72e7b1a/soup-packages/docs/package-development.md)
+describes the manifest and runtime contracts.
+
+## Local development and pull requests
+
+Use Python 3.12, Node.js 24.22.0, and npm 11. Run these commands from the
+community repository with the SOUP checkout beside it.
+
+```sh
+git clone --branch plugin-based https://github.com/soup-ocpm/soup.git ../soup-plugin-based
+python3.12 -m venv .venv
+. .venv/bin/activate
+git -C ../soup-plugin-based show "$(cat scripts/soup-ref.txt):soup-server/requirements.txt" > .venv/soup-requirements.txt
+python -m pip install -r .venv/soup-requirements.txt
+python scripts/build_packages.py --soup ../soup-plugin-based
+```
+
+The script stages community sources with the SOUP revision in
+`scripts/soup-ref.txt`. It checks manifests and dependencies, runs SOUP's
+`build:packages` and frontend tests, runs SOUP's `pack` command, and checks the
+result with SOUP's ZIP extractor and backend plugin loader. Include at least one backend or frontend test. Backend unit tests
+can import the installed package as `soup_pkg_<package_id>`. Test ZIPs are
+written to `dist/` for a local installer check.
+
+Open a pull request against `main` with source and tests. Leave ZIPs, compiled
+bundles, dependency directories, and catalog entries out of the submission.
+The PR workflow has read-only repository permissions.
+
+## Maintainer releases
+
+1. Update the package's manifest version in a PR and merge it. Packages have
+   independent versions. When overriding a package bundled with SOUP, choose
+   a version higher than the bundled one. Release any required community
+   packages first.
+2. Tag the reviewed commit and push the tag. The name and version must match
+   the manifest at the tagged commit.
+
+   ```sh
+   git switch main
+   git pull --ff-only
+   git tag -a graph_explorer/v1.0.1 -m 'Graph Explorer 1.0.1'
+   git push origin refs/tags/graph_explorer/v1.0.1
+   ```
+
+3. From `main`, run the **Community packages** workflow in GitHub Actions
+   with that tag. The workflow checks that the tag points to a commit on
+   `main`, builds and validates the package with read-only permissions, then
+   publishes the ZIP in a separate job using the `package-release` environment.
+4. The publishing job rebuilds `catalog.json` from the published Release ZIPs
+   and commits it to `main`. The catalog includes only published versions.
+   Rerun the workflow to retry a catalog update after publication.
+
+Configure required reviewers on the `package-release` environment if a second
+maintainer must approve publishing. Restrict creation and updates of release
+tags to maintainers, and configure `main` so the workflow can push its catalog
+commit. Keep published tags and assets fixed and use a new version for updates.
+To preview the release catalog locally, authenticate GitHub CLI and run
+`python scripts/generate_catalog.py`.

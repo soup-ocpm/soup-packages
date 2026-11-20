@@ -1,50 +1,128 @@
-name: Package catalog
+name: Community packages
 
 on:
   pull_request:
     branches: [main]
-  push:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release tag, for example graph_explorer/v1.0.0'
+        required: true
+        type: string
 
 permissions:
   contents: read
 
+concurrency:
+  group: community-packages-${{ github.event.pull_request.number || inputs.tag }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  validate:
-    if: github.event_name == 'pull_request'
+  build:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      release-commit: ${{ steps.source.outputs.commit }}
     steps:
       - uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           persist-credentials: false
+      - name: Resolve release source
+        if: github.event_name == 'workflow_dispatch'
+        id: source
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          git check-ref-format "refs/tags/$TAG"
+          commit=$(git rev-parse --verify "refs/tags/$TAG^{commit}")
+          git merge-base --is-ancestor "$commit" "$GITHUB_SHA"
+          git worktree add --detach "$RUNNER_TEMP/release-source" "$commit"
+          printf 'commit=%s\npath=%s\n' "$commit" "$RUNNER_TEMP/release-source" >> "$GITHUB_OUTPUT"
+      - name: Read the SOUP revision
+        id: soup
+        env:
+          SOURCE: ${{ steps.source.outputs.path || '.' }}
+        run: |
+          read -r revision < "$SOURCE/scripts/soup-ref.txt"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+          printf 'revision=%s\n' "$revision" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: soup-ocpm/soup
+          ref: ${{ steps.soup.outputs.revision }}
+          path: .soup
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.0'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python3 scripts/generate_catalog.py --validate
+      - run: python -m pip install -r .soup/soup-server/requirements.txt
+      - name: Compile, test and validate installer ZIPs
+        env:
+          SOURCE: ${{ steps.source.outputs.path || '.' }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          args=(--soup .soup --check-tracked --output "$RUNNER_TEMP/package-dist")
+          if [[ "$GITHUB_EVENT_NAME" == workflow_dispatch ]]; then
+            args+=(--tag "$TAG")
+          fi
+          python "$SOURCE/scripts/build_packages.py" "${args[@]}"
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: package-zip
+          path: ${{ runner.temp }}/package-dist/*.zip
+          if-no-files-found: error
 
   publish:
-    if: github.event_name == 'push'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: package-release
     permissions:
       contents: write
-    concurrency:
-      group: publish-package-catalog
-      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Generate and commit catalog
+      - uses: actions/download-artifact@v4
+        with:
+          name: package-zip
+          path: ${{ runner.temp }}/release-assets
+      - name: Publish package release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          RELEASE_COMMIT: ${{ needs.build.outputs.release-commit }}
         run: |
-          python3 scripts/generate_catalog.py
-          git add -- catalog.json
-          if git diff --cached --quiet -- catalog.json; then
-            exit 0
-          fi
-          git -c user.name='github-actions[bot]' \
-              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
-              commit -m 'Regenerate package catalog'
-          git push origin HEAD:main
+          git check-ref-format "refs/tags/$TAG"
+          git fetch --no-tags origin "refs/tags/$TAG"
+          [[ "$(git rev-parse 'FETCH_HEAD^{commit}')" == "$RELEASE_COMMIT" ]]
+          python scripts/generate_catalog.py --publish "$TAG" "$RUNNER_TEMP/release-assets"
+      - name: Regenerate and commit catalog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp scripts/generate_catalog.py "$RUNNER_TEMP/generate_catalog.py"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch --no-tags origin main
+            git switch --detach FETCH_HEAD
+            python "$RUNNER_TEMP/generate_catalog.py" --output catalog.json
+            git add -- catalog.json
+            if git diff --cached --quiet -- catalog.json; then
+              exit 0
+            fi
+            git commit -m 'Regenerate package catalog'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+          done
+          exit 1

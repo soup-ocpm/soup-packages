@@ -1,0 +1,6 @@
+*.zip
+dist/
+node_modules/
+__pycache__/
+.venv/
+.DS_Store

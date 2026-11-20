@@ -1,23 +1,17 @@
-# SOUP packages
+# SOUP community packages
 
-[catalog.json](catalog.json) lists the available SOUP package versions. Each entry
-contains the package manifest's metadata, a download URL, and the SHA-256
-checksum of the ZIP. The manifest's `name` is the package ID.
+This repository hosts package source for the plugin-based SOUP installer.
+Browse [catalog.json](catalog.json) for published versions, compatibility,
+dependencies, download URLs, and SHA-256 checksums. Download a package's ZIP
+from its [GitHub Release](https://github.com/soup-ocpm/soup-packages/releases)
+and upload it through the SOUP package manager. Required SOUP packages must be
+active before installation. SOUP applies its normal version and override rules
+when the package is already bundled or installed.
 
-To submit a package, add its ZIP under `packages/<name>/`, validate it locally,
-and open a pull request against `main`. See [CONTRIBUTING.md](CONTRIBUTING.md)
-for the ZIP layout and manifest fields.
+Each package lives in `packages/<package_id>/`. See [Graph Explorer](packages/graph_explorer/)
+for the manifest, Python backend, TypeScript frontend, tests, and package docs.
+Submit source through a pull request. GitHub Actions validates it using SOUP's
+own tooling. Package ZIPs are built on demand from maintainer-selected tags
+such as `graph_explorer/v1.0.0` and published as GitHub Release assets.
 
-```sh
-python3 scripts/generate_catalog.py --validate
-```
-
-The generator uses Python 3.11 or newer and the standard library. Omit
-`--validate` to regenerate `catalog.json` locally. For a mirror, use
-`--base-url` with the URL prefix for the repository root. The default download
-URLs point to this repository's `main` branch.
-
-GitHub Actions validates packages on pull requests and commits the regenerated
-catalog after changes land on `main`. The publish job uses the repository's
-`GITHUB_TOKEN` with `contents: write`. Repository rules for `main` must allow
-that bot push for automatic publication to succeed.
+[CONTRIBUTING.md](CONTRIBUTING.md) covers local builds, pull requests, and releases.
