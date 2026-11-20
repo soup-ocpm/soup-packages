@@ -1,0 +1,15 @@
+{
+  "name": "csv_ekg",
+  "version": "1.0.0",
+  "api_version": "4.0",
+  "label": "CSV as event log (EKG)",
+  "description": "Imports CSV files as event logs and builds their EKG on Memgraph (the import of the old New dataset page), with the multiplicities between entity columns in the preview, and converts csv_table tables into EKGs.",
+  "author": "SOUP",
+  "contributors": [{"name": "Alessio Pianaroli", "email": "alessiopianaroli.it@gmail.com"}],
+  "requires": ["ekg", "soup_base", "csv_table"],
+  "requires_tools": ["memgraph", "storage"],
+  "provides_tools": [],
+  "extension_points": [],
+  "python_dependencies": [],
+  "server": {"module": "server", "plugin": "plugin:Plugin"}
+}
