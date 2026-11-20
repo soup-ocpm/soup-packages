@@ -26,6 +26,7 @@ jobs:
     timeout-minutes: 30
     outputs:
       release-commit: ${{ steps.source.outputs.commit }}
+      packages: ${{ steps.packages.outputs.files }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -73,11 +74,44 @@ jobs:
             args+=(--tag "$TAG")
           fi
           python "$SOURCE/scripts/build_packages.py" "${args[@]}"
+      - name: List installer ZIPs
+        if: github.event_name == 'push'
+        id: packages
+        run: |
+          python - <<'PYTHON' >> "$GITHUB_OUTPUT"
+          import json
+          import os
+          from pathlib import Path
+
+          directory = Path(os.environ["RUNNER_TEMP"]) / "package-dist"
+          files = sorted(path.name for path in directory.glob("*.zip") if path.is_file())
+          print(f"files={json.dumps(files)}")
+          PYTHON
       - uses: actions/upload-artifact@v4
         if: github.event_name != 'pull_request'
         with:
-          name: package-zip
+          name: ${{ github.event_name == 'push' && 'all-package-zips' || 'package-zip' }}
           path: ${{ runner.temp }}/package-dist/*.zip
+          if-no-files-found: error
+
+  package-downloads:
+    name: Upload ${{ matrix.file }}
+    if: github.event_name == 'push' && needs.build.outputs.packages != '[]'
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        file: ${{ fromJSON(needs.build.outputs.packages) }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: all-package-zips
+          path: ${{ runner.temp }}/package-dist
+      - uses: actions/upload-artifact@v7
+        with:
+          path: ${{ runner.temp }}/package-dist/${{ matrix.file }}
+          archive: false
           if-no-files-found: error
 
   publish:

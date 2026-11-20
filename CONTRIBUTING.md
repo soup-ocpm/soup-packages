@@ -42,8 +42,8 @@ written to `dist/` for a local installer check.
 Open a pull request against `main` with source and tests. Leave ZIPs, compiled
 bundles, dependency directories, and catalog entries out of the submission.
 The PR workflow has read-only repository permissions. A push to `main`
-builds the package ZIPs and uploads them as the `package-zip` artifact on
-the Actions run. Publishing a GitHub Release requires the maintainer
+builds the packages and lists each installer ZIP separately under **Artifacts**
+on the Actions run. Use `all-package-zips` to download the full set. Publishing a GitHub Release requires the maintainer
 workflow below.
 
 ## Maintainer releases
