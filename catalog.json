@@ -1,0 +1,36 @@
+{
+  "packages": [
+    {
+      "api_version": "4.0",
+      "app": {
+        "entry": "dist/index.js"
+      },
+      "author": "SOUP",
+      "contributors": [],
+      "databases": [
+        "memgraph",
+        "neo4j"
+      ],
+      "description": "Read-only incremental exploration and application-stored graph scenes.",
+      "download_url": "https://raw.githubusercontent.com/soup-ocpm/soup-packages/main/packages/graph_explorer/graph_explorer_1.0.zip",
+      "extension_points": [],
+      "label": "Graph Explorer",
+      "name": "graph_explorer",
+      "provides_tools": [],
+      "python_dependencies": [],
+      "requires": [
+        "soup_base",
+        "tool_storage"
+      ],
+      "requires_tools": [
+        "storage"
+      ],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "3fc3e0dbeb94ad2f8ef022bc22c769df4ea7426ba05ece6052472a160a0b0f57",
+      "version": "1.0.0"
+    }
+  ]
+}
