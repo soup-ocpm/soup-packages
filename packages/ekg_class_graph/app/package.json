@@ -5,7 +5,7 @@
   "description": "Frontend of the ekg_class_graph package: <soup-pkg-ekg-class-graph> and <soup-pkg-ekg-class-stats> (use the elements of soup_base by tag)",
   "contributors": [
     {
-      "name": "Alessio Pianaroli",
+      "name": "SOUP",
       "email": "alessiopianaroli.it@gmail.com"
     }
   ],

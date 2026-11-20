@@ -5,7 +5,7 @@
   "description": "Frontend of the ekg_analysis package: <soup-pkg-ekg-insights> (uses the elements of soup_base by tag)",
   "contributors": [
     {
-      "name": "Alessio Pianaroli",
+      "name": "SOUP",
       "email": "alessiopianaroli.it@gmail.com"
     }
   ],
