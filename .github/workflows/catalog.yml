@@ -1,6 +1,8 @@
 name: Community packages
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -14,8 +16,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: community-packages-${{ github.event.pull_request.number || inputs.tag }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: community-packages-${{ github.event.pull_request.number || inputs.tag || github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
 
 jobs:
   build:
@@ -72,7 +74,7 @@ jobs:
           fi
           python "$SOURCE/scripts/build_packages.py" "${args[@]}"
       - uses: actions/upload-artifact@v4
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name != 'pull_request'
         with:
           name: package-zip
           path: ${{ runner.temp }}/package-dist/*.zip

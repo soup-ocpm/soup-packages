@@ -11,7 +11,8 @@ when the package is already bundled or installed.
 Each package lives in `packages/<package_id>/`. See [Graph Explorer](packages/graph_explorer/)
 for the manifest, Python backend, TypeScript frontend, tests, and package docs.
 Submit source through a pull request. GitHub Actions validates it using SOUP's
-own tooling. Package ZIPs are built on demand from maintainer-selected tags
-such as `graph_explorer/v1.0.0` and published as GitHub Release assets.
+own tooling. A push to `main` builds ZIPs you can download from the workflow
+run's **Artifacts** section. Maintainers publish GitHub Release assets by
+running the workflow with a package tag such as `graph_explorer/v1.0.0`.
 
 [CONTRIBUTING.md](CONTRIBUTING.md) covers local builds, pull requests, and releases.
