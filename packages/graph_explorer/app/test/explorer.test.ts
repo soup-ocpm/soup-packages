@@ -308,10 +308,10 @@ describe("package integration", () => {
     el.scene.selection = ["a"];
     button(el, "Pin / unpin selection").click();
     expect(el.scene.pins).toContain("a");
-    tab(el, "Appearance");
+    tab(el, "Style");
     field(el, "Caption property", "value");
     expect(el.scene.style.caption).toBe("value");
-    tab(el, "Analyze");
+    tab(el, "Insights");
     button(el, "Calculate").click();
     expect(el.shadowRoot!.querySelector("table")!.textContent).toContain(
       "Community",
@@ -406,7 +406,7 @@ describe("package integration", () => {
     vi.useFakeTimers();
     const el = mount();
     await tick();
-    tab(el, "Filters");
+    tab(el, "Filter");
     field(el, "Slicer property", "value");
     button(el, "Play / pause").click();
     vi.advanceTimersByTime(300);
@@ -451,7 +451,7 @@ describe("search, query before rendering and styling", () => {
   it("styles live: one undo step per gesture, rule priority, no camera or selection change", async () => {
     const el = mount();
     await tick();
-    tab(el, "Appearance");
+    tab(el, "Style");
     el.scene.camera = { x: 11, y: 22, k: 2 };
     el.scene.selection = ["a"];
     const before = el.scene.style.labels["Event"].color;

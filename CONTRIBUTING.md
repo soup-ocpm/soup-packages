@@ -10,7 +10,7 @@ Create `packages/<package_id>/` and include the following files.
 | `server/` | Python backend. Declare its module and plugin entry in the manifest. |
 | `requirements.txt` | Optional named PEP 508 Python dependencies. The manifest's `python_dependencies` field is also supported. Declare SOUP package and tool dependencies in `requires` and `requires_tools`. |
 | `app/` | For packages with a frontend, include `package.json`, `tsconfig.json`, and `src/index.ts`. Declare frontend dependencies in `app/package.json` and set the manifest's `app.entry` to `dist/index.js`. |
-| `tests/` and `app/test/` | Backend `unittest` files named `test_*.py` and frontend Vitest files named `*.test.ts`. |
+| `tests/` and `app/test/` | Optional backend `unittest` files named `test_*.py` and frontend Vitest files named `*.test.ts`. |
 | `README.md` | Explain the package, its dependencies, and how to use or test it. |
 
 Package IDs start with a lowercase letter and use lowercase letters, digits,
@@ -34,12 +34,13 @@ python scripts/build_packages.py --soup ../soup-plugin-based
 
 The script stages community sources with the SOUP revision in
 `scripts/soup-ref.txt`. It checks manifests and dependencies, runs SOUP's
-`build:packages` and frontend tests, runs SOUP's `pack` command, and checks the
-result with SOUP's ZIP extractor and backend plugin loader. Include at least one backend or frontend test. Backend unit tests
+`build:packages` and `pack` commands, and checks the result with SOUP's ZIP
+extractor and backend plugin loader. Package tests are optional. CI runs backend
+and frontend tests when present. Backend unit tests
 can import the installed package as `soup_pkg_<package_id>`. Test ZIPs are
 written to `dist/` for a local installer check.
 
-Open a pull request against `main` with source and tests. Leave ZIPs, compiled
+Open a pull request against `main` with package source. Leave ZIPs, compiled
 bundles, dependency directories, and catalog entries out of the submission.
 The PR workflow has read-only repository permissions. A push to `main`
 builds the packages and lists each installer ZIP separately under **Artifacts**

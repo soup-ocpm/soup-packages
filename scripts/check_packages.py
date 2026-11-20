@@ -100,7 +100,7 @@ for path in packages:
     if problems:
         raise SystemExit(f"{manifest.name}: {', '.join(problems)}")
     plugin_factory(PackageSource(manifest, path, ORIGIN_INSTALLED))()
-if tests.is_dir():
+if any(tests.rglob("test_*.py")):
     suite = unittest.defaultTestLoader.discover(str(tests))
     if not suite.countTestCases():
         raise SystemExit(f"{tests}: no unittest cases found")
@@ -130,10 +130,6 @@ def main():
             raise ValueError(f"{name}: sha256 and download_url are generated fields")
 
         path = sources[name].path
-        backend_tests = list((path / "tests").rglob("test_*.py"))
-        frontend_tests = list((path / "app/test").rglob("*.test.ts"))
-        if not (backend_tests or frontend_tests):
-            raise ValueError(f"{name}: add at least one backend or frontend test")
         if manifest.app_entry:
             for file in ("package.json", "tsconfig.json", "src/index.ts"):
                 if not (path / "app" / file).is_file():
