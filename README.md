@@ -8,11 +8,13 @@ and upload it through the SOUP package manager. Required SOUP packages must be
 active before installation. SOUP applies its normal version and override rules
 when the package is already bundled or installed.
 
-Each package lives in `packages/<package_id>/`. See [Graph Explorer](packages/graph_explorer/)
-for the manifest, Python backend, TypeScript frontend, tests, and package docs.
-Submit source through a pull request. GitHub Actions validates it using SOUP's
-own tooling. A push to `main` builds ZIPs you can download individually from
-the workflow run's **Artifacts** section. Maintainers can approve package versions for automatic publication on `main`
-or run a release manually with a package tag such as `graph_explorer/v1.0.0`.
+Each package lives in `packages/<package_id>/`. Submit source through a pull
+request. GitHub Actions validates it using SOUP's own tooling and runs any
+tests included with the package. Builds on `main` provide individual ZIPs
+under **Artifacts** on the Actions run.
+
+After a successful build on `main`, the workflow publishes each previously
+unreleased package version approved in the release list and updates the
+catalog. [Release approvals](.github/release-approvals.json)
 
 [CONTRIBUTING.md](CONTRIBUTING.md) covers local builds, pull requests, and releases.

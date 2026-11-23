@@ -56,14 +56,15 @@ in a maintainer-reviewed PR. The following example approves two versions.
 ```json
 {
   "graph_explorer": "1.0.0",
-  "oced_importer": "1.2.0"
+  "oced_importer": "1.0.0"
 }
 ```
 
 After the PR lands on `main` and the build passes, the publish job creates
 any missing package tags, attaches each approved installer ZIP to its own
 GitHub Release, and updates the catalog. A version bump requires a matching
-approval. Already published versions are skipped. Configure repository rules
+approval. Already published versions are skipped. If a tag points to an
+earlier commit, the job reports that package and continues with the others. Configure repository rules
 to allow the workflow to create package tags and push its catalog commit.
 Restrict approval-list changes to maintainer review.
 
