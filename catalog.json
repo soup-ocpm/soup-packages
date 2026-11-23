@@ -5,6 +5,7 @@
       "author": "SOUP",
       "contributors": [
         {
+          "email": "alessiopianaroli.it@gmail.com",
           "name": "SOUP"
         }
       ],
@@ -31,7 +32,7 @@
       "author": "SOUP",
       "contributors": [
         {
-          
+          "email": "alessiopianaroli.it@gmail.com",
           "name": "SOUP"
         }
       ],
@@ -69,7 +70,7 @@
       "author": "SOUP",
       "contributors": [
         {
-          
+          "email": "alessiopianaroli.it@gmail.com",
           "name": "SOUP"
         }
       ],
@@ -103,7 +104,7 @@
       "author": "SOUP",
       "contributors": [
         {
-          
+          "email": "alessiopianaroli.it@gmail.com",
           "name": "SOUP"
         }
       ],
@@ -144,7 +145,7 @@
       "author": "SOUP",
       "contributors": [
         {
-          
+          "email": "alessiopianaroli.it@gmail.com",
           "name": "SOUP"
         }
       ],
@@ -182,7 +183,7 @@
       "author": "SOUP",
       "contributors": [
         {
-          
+          "email": "alessiopianaroli.it@gmail.com",
           "name": "SOUP"
         }
       ],
@@ -216,7 +217,7 @@
       "author": "SOUP",
       "contributors": [
         {
-          
+          "email": "alessiopianaroli.it@gmail.com",
           "name": "SOUP"
         }
       ],
@@ -314,40 +315,136 @@
       "version": "1.0.0"
     },
     {
-      "api_version": "4.1",
-      "app": {
-        "entry": "dist/index.js"
-      },
-      "author": "SOUP",
-      "contributors": [
-        {
-          
-          "name": "SOUP"
-        }
+      "api_version": "4.0",
+      "databases": [
+        "memgraph",
+        "neo4j"
       ],
-      "description": "Imports OCEL 2.0 JSON logs (.json, .jsonocel) as tables in the package's storage space or as EKGs on Memgraph, shows the tables and a summary, decomposes the tables into an EKG (with the qualifiers on :CORR and the object-object relationships as :REL, through its step in ekg.build_steps) and exports them as OCEL 2.0 JSON.",
-      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/ocel/v1.1.0/ocel-1.1.0.zip",
+      "description": "Import OCEL 2.0 JSON as a dedicated Neo4j EKG through the existing OCED importer. For native OCEL tables and PM4Py, select the existing OCEL 2.0 as tables importer.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/ocel2_oced_bridge/v1.0.0/ocel2_oced_bridge-1.0.0.zip",
       "extension_points": [],
-      "label": "OCEL 2.0",
-      "name": "ocel",
+      "label": "OCEL 2.0 to OCED",
+      "name": "ocel2_oced_bridge",
       "provides_tools": [],
       "python_dependencies": [],
       "requires": [
-        "soup_base",
-        "ekg",
-        "ekg_views",
-        "tool_storage"
+        "oced_importer"
       ],
       "requires_tools": [
-        "memgraph",
+        "catalog",
         "storage"
       ],
       "server": {
         "module": "server",
         "plugin": "plugin:Plugin"
       },
-      "sha256": "2c570b9132d015a8ad9dc909f7d82fd60b26e20cb2eb90ab75b3be4f08d020fe",
-      "version": "1.1.0"
+      "sha256": "a4c4fcdc73677894433be43955e4bbb77845b2abd105a403bf27b8ce9a4ee6fb",
+      "version": "1.0.0"
+    },
+    {
+      "api_version": "4.0",
+      "app": {
+        "entry": "dist/index.js"
+      },
+      "author": "SOUP community",
+      "databases": [
+        "memgraph"
+      ],
+      "description": "OC-DFG discovery with interactive frequency/performance views and JSON, SVG and DOT exports.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/pm4py_ocdfg/v1.0.0/pm4py_ocdfg-1.0.0.zip",
+      "extension_points": [],
+      "label": "OC-DFG (PM4Py)",
+      "name": "pm4py_ocdfg",
+      "provides_tools": [],
+      "python_dependencies": [
+        "pm4py==2.7.17",
+        "pandas==2.2.3",
+        "graphviz==0.21"
+      ],
+      "requires": [
+        "soup_base",
+        "ocel",
+        "ekg",
+        "tool_storage",
+        "tool_memgraph"
+      ],
+      "requires_tools": [
+        "storage",
+        "memgraph"
+      ],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "569995c3f8583db764b123f47cd9d9d813662ddab2ae55493f6ad16c91215a51",
+      "version": "1.0.0"
+    },
+    {
+      "api_version": "4.0",
+      "app": {
+        "entry": "dist/index.js"
+      },
+      "author": "SOUP community",
+      "databases": [
+        "memgraph"
+      ],
+      "description": "Object-centric Petri net discovery, interactive pan and zoom, SVG, DOT and JSON exports.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/pm4py_ocpn/v1.0.0/pm4py_ocpn-1.0.0.zip",
+      "extension_points": [],
+      "label": "OC-PN (PM4Py)",
+      "name": "pm4py_ocpn",
+      "provides_tools": [],
+      "python_dependencies": [
+        "pm4py==2.7.17",
+        "graphviz==0.21",
+        "pandas==2.2.3"
+      ],
+      "requires": [
+        "soup_base",
+        "ocel",
+        "ekg",
+        "tool_storage",
+        "tool_memgraph"
+      ],
+      "requires_tools": [
+        "storage",
+        "memgraph"
+      ],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "119dbd38b715eb0fe821050c5ad69bcff22ac048e129a7f7a915a041d5a7a8ea",
+      "version": "1.0.0"
+    },
+    {
+      "api_version": "4.0",
+      "databases": [
+        "neo4j"
+      ],
+      "description": "PromG BPIC17 Neo4j importer with non-destructive SOUP EKG normalization and legacy dataset migration.",
+      "download_url": "https://github.com/soup-ocpm/soup-packages/releases/download/promg_bpic17/v1.0.0/promg_bpic17-1.0.0.zip",
+      "extension_points": [],
+      "label": "PromG BPIC 2017 importer",
+      "name": "promg_bpic17",
+      "provides_tools": [],
+      "python_dependencies": [
+        "promg==2.2.3"
+      ],
+      "requires": [
+        "tool_storage",
+        "ekg_views"
+      ],
+      "requires_tools": [
+        "catalog",
+        "storage"
+      ],
+      "server": {
+        "module": "server",
+        "plugin": "plugin:Plugin"
+      },
+      "sha256": "02b9e206922392243697be6ff80c7d0be10eb6661b63dd87ec0cb7dd339f998e",
+      "version": "1.0.0"
     }
   ]
 }
