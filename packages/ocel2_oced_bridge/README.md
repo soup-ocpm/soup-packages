@@ -79,8 +79,8 @@ Memgraph-dependent native OCEL package.
 
 ## Installation and checks
 
-Update `oced_importer` to 1.2.0 and this bridge to 1.1.0 together. The revised OCEL
-registration is 1.1.0. Deploy the accompanying small EKG lifecycle/view changes
+Install the community releases of `oced_importer` and this bridge together.
+Deploy the accompanying small EKG lifecycle/view changes
 for Memgraph OCED-kind support; there are no core or deployment-file changes.
 
 ```bash

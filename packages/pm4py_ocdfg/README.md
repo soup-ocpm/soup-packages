@@ -1,7 +1,7 @@
 # OC-DFG (PM4Py)
 
 Optional Memgraph package for OC-DFG discovery from `ocel_tables` or `ekg` objects.
-Version 1.1.3 upgrades 1.1.2 through SOUP's normal package installer. Enable its
+Install the community release through SOUP's package installer. Enable its
 manifest dependencies: `soup_base`, `ocel`, `ekg`, `tool_storage`, `tool_memgraph`.
 Neo4j is not supported: the EKG reader uses Memgraph's graph lifecycle and schema;
 adding Neo4j requires a dataset-scoped reader and independent compatibility tests.
@@ -36,6 +36,6 @@ npm run build:packages -- pm4py_ocdfg
 npm run pack -- pm4py_ocdfg
 ```
 
-The installable archive is `dist/pm4py_ocdfg-1.1.3.zip`. Frontend sources and local
+The installable archive is `dist/pm4py_ocdfg-1.0.0.zip`. Frontend sources and local
 structural types for the required `soup_base` element are included for maintenance;
 the ZIP carries the compiled Web Component, not another graph renderer.

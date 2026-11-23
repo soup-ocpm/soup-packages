@@ -57,18 +57,21 @@ def publish(root, repo, directory):
         refs[ref] = sha
 
     missing = []
+    ready = []
     for tag in pending:
-        read_asset(directory / asset_name(tag), tag)
         ref = f"refs/tags/{tag}"
         existing = refs.get(ref + "^{}", refs.get(ref))
         if existing is None:
             missing.append(f"{commit}:{ref}")
         elif existing != commit:
-            raise ValueError(f"{tag} already points to another commit; release that tag with the manual workflow")
+            print(f"{tag}: skipped because the existing tag points to another commit", file=sys.stderr)
+            continue
+        read_asset(directory / asset_name(tag), tag)
+        ready.append(tag)
 
     if missing:
         git(root, "push", "--atomic", "origin", *missing)
-    for tag in pending:
+    for tag in ready:
         publish_release(repo, tag, directory)
 
 
