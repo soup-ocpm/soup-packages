@@ -18,6 +18,10 @@ MAX_ZIP_BYTES = 50 * 1024 * 1024
 MAX_METADATA_BYTES = 1024 * 1024
 
 
+class ReleaseManifestMismatch(ValueError):
+    """The manifest identifies a different package or version than the tag."""
+
+
 def unique_object(pairs):
     result = {}
     for key, value in pairs:
@@ -67,7 +71,10 @@ def read_asset(path, tag):
         with ZipFile(source) as archive:
             metadata = parse_metadata(read_text(archive, f"{name}/soup-package.json"))
             if (metadata.get("name"), metadata.get("version")) != (name, version):
-                raise ValueError(f"{tag}: released manifest name or version does not match its tag")
+                raise ReleaseManifestMismatch(
+                    f"{tag}: ZIP manifest declares {metadata.get('name')!r} "
+                    f"version {metadata.get('version')!r}"
+                )
             requirements = f"{name}/requirements.txt"
             if requirements in archive.namelist():
                 specs = list(metadata.get("python_dependencies", []))
@@ -111,8 +118,13 @@ def catalog_from_releases(repo):
                     "api", "-H", "Accept: application/octet-stream",
                     f"repos/{repo}/releases/assets/{asset['id']}", stdout=file,
                 )
-            metadata = read_asset(path, tag)
-            path.unlink()
+            try:
+                metadata = read_asset(path, tag)
+            except ReleaseManifestMismatch as error:
+                print(f"Skipping release: {error}. The manifest must match the tag.", file=sys.stderr)
+                continue
+            finally:
+                path.unlink()
             if digest := asset.get("digest"):
                 if digest != f"sha256:{metadata['sha256']}":
                     raise ValueError(f"{tag}: downloaded ZIP does not match GitHub's digest")

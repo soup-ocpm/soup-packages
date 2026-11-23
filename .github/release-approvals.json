@@ -12,5 +12,6 @@
     "ocel": "1.0.0",
     "ocel2_oced_bridge": "1.0.0",
     "pm4py_ocdfg": "1.0.0",
-    "promg_bpic17": "1.0.0"
+    "promg_bpic17": "1.0.0",
+    "pm4py_ocpn": "1.0.0"
 }

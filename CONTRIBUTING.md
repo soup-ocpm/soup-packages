@@ -90,6 +90,8 @@ Restrict approval-list changes to maintainer review.
    publishes the ZIP in a separate job using the `package-release` environment.
 4. The publishing job rebuilds `catalog.json` from the published Release ZIPs
    and commits it to `main`. The catalog includes only published versions.
+   A published ZIP whose manifest name or version differs from its tag is
+   reported in the build log and excluded from the catalog.
    Rerun the workflow to retry a catalog update after publication.
 
 Configure required reviewers on the `package-release` environment if a second
